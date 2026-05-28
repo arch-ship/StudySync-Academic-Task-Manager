@@ -7,7 +7,8 @@ A modern student productivity app built with vanilla HTML, CSS, and JavaScript.
 ## 🗂️ File Structure
 
 ```
-Agile_Project/
+
+StudySync-Academic-Task-Manager/
 ├── index.html      → App structure & all HTML
 ├── style.css       → All styles, themes, animations
 ├── app.js          → All logic, data, rendering
