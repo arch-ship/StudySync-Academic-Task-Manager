@@ -1,204 +1,477 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>StudySync — Academic Task Manager</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>StudySync</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <div class="app-shell">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <span class="brand-icon">⬡</span>
-        <span class="brand-name">StudySync</span>
-      </div>
-      <nav class="nav">
-        <a href="#" class="nav-item active" data-view="dashboard">
-          <span class="nav-icon">◈</span> Dashboard
-        </a>
-        <a href="#" class="nav-item" data-view="assignments">
-          <span class="nav-icon">◉</span> Assignments
-        </a>
-        <a href="#" class="nav-item" data-view="groups">
-          <span class="nav-icon">◎</span> Group Tasks
-        </a>
-        <a href="#" class="nav-item" data-view="calendar">
-          <span class="nav-icon">◷</span> Calendar
-        </a>
-        <a href="#" class="nav-item" data-view="reminders">
-          <span class="nav-icon">◆</span> Reminders
-        </a>
-      </nav>
-      <div class="sidebar-footer">
-        <div class="user-card">
-          <div class="user-avatar">RS</div>
-          <div class="user-info">
-            <div class="user-name">Rahul S.</div>
-            <div class="user-role">Student</div>
-          </div>
-        </div>
-      </div>
-    </aside>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <header class="top-bar">
-        <button class="hamburger" id="hamburger">&#9776;</button>
-        <div class="page-title" id="page-title">Dashboard</div>
-        <div class="top-actions">
-          <button class="btn-add" id="open-modal">+ Add Assignment</button>
-          <div class="notif-bell" id="notif-bell">
-            🔔
-            <span class="notif-badge" id="notif-count">0</span>
-          </div>
-        </div>
-      </header>
-
-      <!-- Views -->
-      <div class="view active" id="view-dashboard">
-        <div class="stats-row">
-          <div class="stat-card accent-orange">
-            <div class="stat-num" id="stat-total">0</div>
-            <div class="stat-label">Total Tasks</div>
-          </div>
-          <div class="stat-card accent-blue">
-            <div class="stat-num" id="stat-pending">0</div>
-            <div class="stat-label">Pending</div>
-          </div>
-          <div class="stat-card accent-green">
-            <div class="stat-num" id="stat-done">0</div>
-            <div class="stat-label">Completed</div>
-          </div>
-          <div class="stat-card accent-red">
-            <div class="stat-num" id="stat-overdue">0</div>
-            <div class="stat-label">Overdue</div>
-          </div>
-        </div>
-        <div class="section-heading">Due This Week</div>
-        <div class="task-list" id="dashboard-tasks"></div>
-      </div>
-
-      <div class="view" id="view-assignments">
-        <div class="filter-bar">
-          <button class="filter-btn active" data-filter="all">All</button>
-          <button class="filter-btn" data-filter="pending">Pending</button>
-          <button class="filter-btn" data-filter="completed">Completed</button>
-          <button class="filter-btn" data-filter="overdue">Overdue</button>
-        </div>
-        <div class="task-list" id="all-tasks"></div>
-      </div>
-
-      <div class="view" id="view-groups">
-        <div class="group-header">
-          <div class="section-heading">Group Projects</div>
-          <button class="btn-add-small" id="open-group-modal">+ New Group Task</button>
-        </div>
-        <div class="group-board" id="group-board">
-          <div class="kanban-col">
-            <div class="kanban-header todo">📋 To Do</div>
-            <div class="kanban-items" id="kanban-todo"></div>
-          </div>
-          <div class="kanban-col">
-            <div class="kanban-header inprogress">⚡ In Progress</div>
-            <div class="kanban-items" id="kanban-inprogress"></div>
-          </div>
-          <div class="kanban-col">
-            <div class="kanban-header done">✅ Done</div>
-            <div class="kanban-items" id="kanban-done"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="view" id="view-calendar">
-        <div class="calendar-container">
-          <div class="cal-nav">
-            <button id="cal-prev">&#8592;</button>
-            <h2 id="cal-month-label"></h2>
-            <button id="cal-next">&#8594;</button>
-          </div>
-          <div class="cal-grid-header">
-            <div>Sun</div><div>Mon</div><div>Tue</div>
-            <div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-          </div>
-          <div class="cal-grid" id="cal-grid"></div>
-        </div>
-      </div>
-
-      <div class="view" id="view-reminders">
-        <div class="section-heading">Upcoming Deadlines</div>
-        <div class="reminder-list" id="reminder-list"></div>
-      </div>
-    </main>
+<!-- ══════════════════════════════════════
+     LOGIN
+══════════════════════════════════════ -->
+<!-- LOADING SCREEN -->
+<div id="ss-loader">
+  <div class="ss-loader-inner">
+    <div class="ss-loader-logo">
+      <div class="ss-loader-icon">📚</div>
+      <div class="ss-loader-name">StudySync</div>
+    </div>
+    <div class="ss-loader-bar"><div class="ss-loader-fill"></div></div>
+    <div class="ss-loader-text">Loading your workspace...</div>
   </div>
+</div>
 
-  <!-- Add Assignment Modal -->
-  <div class="modal-overlay" id="modal-overlay">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>New Assignment</h3>
-        <button class="modal-close" id="modal-close">&times;</button>
-      </div>
-      <div class="modal-body">
-        <label>Title *</label>
-        <input type="text" id="task-title" placeholder="e.g. DSA Assignment 3" />
-
-        <label>Subject</label>
-        <input type="text" id="task-subject" placeholder="e.g. Computer Science" />
-
-        <label>Due Date *</label>
-        <input type="date" id="task-due" />
-
-        <label>Priority</label>
-        <select id="task-priority">
-          <option value="high">🔴 High</option>
-          <option value="medium" selected>🟡 Medium</option>
-          <option value="low">🟢 Low</option>
-        </select>
-
-        <label>Notes</label>
-        <textarea id="task-notes" placeholder="Optional notes..."></textarea>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-cancel" id="modal-cancel">Cancel</button>
-        <button class="btn-save" id="modal-save">Save Assignment</button>
+<div class="auth-screen active" id="screen-login">
+  <div class="auth-bg-orb" style="width:400px;height:400px;background:rgba(124,106,247,0.08);top:-100px;left:-100px;"></div>
+  <div class="auth-bg-orb" style="width:300px;height:300px;background:rgba(244,114,182,0.06);bottom:-50px;right:-50px;"></div>
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">📚</div>
+      <div>
+        <div class="auth-logo-name">StudySync</div>
+        <div class="auth-logo-tag">Academic OS</div>
       </div>
     </div>
+    <div class="auth-title">Welcome back 👋</div>
+    <div class="auth-sub">Sign in to continue managing your academic life.</div>
+    <div class="auth-error" id="login-error"></div>
+    <div class="auth-field">
+      <label>Email</label>
+      <input type="email" id="login-email" placeholder="you@college.edu" autocomplete="email"/>
+    </div>
+    <div class="auth-field">
+      <label>Password</label>
+      <input type="password" id="login-password" placeholder="Enter your password"/>
+    </div>
+    <button class="btn-auth" id="login-btn">Sign In →</button>
+    <div class="auth-divider">or</div>
+    <button class="btn-auth" id="login-demo" style="background:var(--surface);color:var(--text);border:1px solid var(--border2);margin-top:0;">Try Demo Account 🚀</button>
+    <div class="auth-switch">Don't have an account? <a onclick="showScreen('register')">Create one</a></div>
   </div>
+</div>
 
-  <!-- Add Group Task Modal -->
-  <div class="modal-overlay" id="group-modal-overlay">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>New Group Task</h3>
-        <button class="modal-close" id="group-modal-close">&times;</button>
-      </div>
-      <div class="modal-body">
-        <label>Task Title *</label>
-        <input type="text" id="group-task-title" placeholder="e.g. Design UI Mockup" />
-
-        <label>Assigned To</label>
-        <input type="text" id="group-task-member" placeholder="e.g. Priya, Ravi" />
-
-        <label>Status</label>
-        <select id="group-task-status">
-          <option value="todo">To Do</option>
-          <option value="inprogress">In Progress</option>
-          <option value="done">Done</option>
-        </select>
-
-        <label>Due Date</label>
-        <input type="date" id="group-task-due" />
-      </div>
-      <div class="modal-footer">
-        <button class="btn-cancel" id="group-modal-cancel">Cancel</button>
-        <button class="btn-save" id="group-modal-save">Save Task</button>
+<!-- ══════════════════════════════════════
+     REGISTER
+══════════════════════════════════════ -->
+<div class="auth-screen" id="screen-register">
+  <div class="auth-bg-orb" style="width:350px;height:350px;background:rgba(96,165,250,0.07);top:-80px;right:-60px;"></div>
+  <div class="auth-bg-orb" style="width:280px;height:280px;background:rgba(34,211,160,0.06);bottom:-40px;left:-40px;"></div>
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">📚</div>
+      <div>
+        <div class="auth-logo-name">StudySync</div>
+        <div class="auth-logo-tag">Academic OS</div>
       </div>
     </div>
+    <div class="auth-title">Create account ✨</div>
+    <div class="auth-sub">Join thousands of students who never miss a deadline.</div>
+    <div class="auth-error" id="reg-error"></div>
+    <div class="auth-row">
+      <div class="auth-field">
+        <label>First Name</label>
+        <input type="text" id="reg-fname" placeholder="Rahul"/>
+      </div>
+      <div class="auth-field">
+        <label>Last Name</label>
+        <input type="text" id="reg-lname" placeholder="Singh"/>
+      </div>
+    </div>
+    <div class="auth-field">
+      <label>Email</label>
+      <input type="email" id="reg-email" placeholder="you@college.edu"/>
+    </div>
+    <div class="auth-field">
+      <label>Course / Branch</label>
+      <input type="text" id="reg-course" placeholder="e.g. B.Tech Computer Science"/>
+    </div>
+    <div class="auth-field">
+      <label>Password</label>
+      <input type="password" id="reg-password" placeholder="Min. 6 characters" oninput="checkStrength(this.value)"/>
+      <div class="strength-bar" id="strength-bar">
+        <div class="strength-seg" id="s1"></div>
+        <div class="strength-seg" id="s2"></div>
+        <div class="strength-seg" id="s3"></div>
+        <div class="strength-seg" id="s4"></div>
+      </div>
+    </div>
+    <div class="auth-field">
+      <label>Confirm Password</label>
+      <input type="password" id="reg-confirm" placeholder="Repeat password"/>
+    </div>
+    <button class="btn-auth" id="reg-btn">Create Account →</button>
+    <div class="auth-switch">Already have an account? <a onclick="showScreen('login')">Sign in</a></div>
   </div>
+</div>
 
-  <script src="app.js"></script>
+<!-- ══════════════════════════════════════
+     APP
+══════════════════════════════════════ -->
+<div class="app-shell" id="app-shell">
+  <!-- Background orbs -->
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">📚</div>
+      <div>
+        <div class="brand-name">StudySync</div>
+        <div class="brand-tag">Academic OS</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-sec">Overview</div>
+      <button class="nav-item active" data-view="dashboard"><span class="nav-icon">🏠</span>Dashboard</button>
+      <div class="nav-sec">Academics</div>
+      <button class="nav-item" data-view="assignments"><span class="nav-icon">📋</span>Assignments<span class="nav-badge" id="nb-ov" style="display:none">0</span></button>
+      <button class="nav-item" data-view="groups"><span class="nav-icon">👥</span>Group Tasks</button>
+      <button class="nav-item" data-view="calendar"><span class="nav-icon">📅</span>Calendar</button>
+      <div class="nav-sec">Productivity</div>
+      <button class="nav-item" data-view="reminders"><span class="nav-icon">🔔</span>Reminders</button>
+      <button class="nav-item" data-view="pomodoro"><span class="nav-icon">⏱️</span>Pomodoro</button>
+      <button class="nav-item" data-view="notes"><span class="nav-icon">📝</span>Notes</button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="user-card">
+        <div class="user-av" id="sb-av">RS</div>
+        <div><div class="user-name" id="sb-name">Rahul S.</div><div class="user-sub" id="sb-sub">Student</div></div>
+        <button class="logout-btn" onclick="logout()" title="Logout">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger">☰</button>
+      <div class="topbar-title-wrap">
+        <div class="topbar-title" id="pg-title">Dashboard</div>
+        <div class="topbar-sub" id="pg-sub">Good morning! 👋</div>
+      </div>
+      <div class="topbar-right">
+        <div class="search-wrap"><span>🔍</span><input type="text" id="search-inp" placeholder="Search tasks…"/></div>
+        <button class="btn-new" id="btn-add-task">+ New Task</button>
+        <button class="icon-btn" id="theme-toggle" title="Toggle theme" style="font-size:18px;">🌙</button>
+        <div class="icon-btn" id="notif-icon">🔔<span class="notif-dot" id="notif-dot" style="display:none"></span></div>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <div class="view active" id="view-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card sc-o"><div class="stat-icon">📚</div><div class="stat-num" id="d-total">0</div><div class="stat-lbl">Total Tasks</div></div>
+        <div class="stat-card sc-b"><div class="stat-icon">⏳</div><div class="stat-num" id="d-pending">0</div><div class="stat-lbl">Pending</div></div>
+        <div class="stat-card sc-g"><div class="stat-icon">✅</div><div class="stat-num" id="d-done">0</div><div class="stat-lbl">Completed</div></div>
+        <div class="stat-card sc-r"><div class="stat-icon">⚠️</div><div class="stat-num" id="d-over">0</div><div class="stat-lbl">Overdue</div></div>
+      </div>
+      <div class="dash-grid">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">📌 Due This Week</div><button class="panel-link" onclick="switchView('assignments')">View all →</button></div>
+            <div class="task-list" id="d-tasks"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">📊 Tasks by Subject</div></div>
+            <div id="d-subjects"></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">🎯 Progress</div></div>
+            <div class="prog-wrap">
+              <svg class="prog-ring" width="76" height="76" viewBox="0 0 76 76">
+                <circle class="ring-bg" cx="38" cy="38" r="30" stroke-width="5"/>
+                <circle class="ring-fg" id="ring-fg" cx="38" cy="38" r="30" stroke-width="5" stroke-dasharray="188" stroke-dashoffset="188"/>
+              </svg>
+              <div class="prog-text"><div class="prog-big" id="d-pct">0%</div><div class="prog-sub">tasks completed</div></div>
+            </div>
+            <div id="d-prio-bars"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">🔜 Upcoming</div></div>
+            <div id="d-upcoming"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ASSIGNMENTS -->
+    <div class="view" id="view-assignments">
+      <div class="filter-bar">
+        <button class="fchip active" data-f="all">All</button>
+        <button class="fchip" data-f="pending">Pending</button>
+        <button class="fchip" data-f="completed">Completed</button>
+        <button class="fchip" data-f="overdue">Overdue</button>
+        <button class="fchip" data-f="high">🔴 High</button>
+        <select class="sort-sel" id="sort-sel">
+          <option value="due">Sort: Due Date</option>
+          <option value="priority">Sort: Priority</option>
+          <option value="title">Sort: Title A-Z</option>
+          <option value="created">Sort: Newest</option>
+        </select>
+      </div>
+      <div class="task-list" id="all-tasks"></div>
+    </div>
+
+    <!-- GROUPS -->
+    <div class="view" id="view-groups">
+      <div class="kanban-hd">
+        <div><div style="font-family:var(--hf);font-size:16px;font-weight:700;">Group Projects</div><div style="font-size:12px;color:var(--muted);margin-top:2px;" id="k-stats">—</div></div>
+        <button class="btn-new" id="btn-add-group">+ Group Task</button>
+      </div>
+      <div class="kanban-grid">
+        <div class="kcol">
+          <div class="kcol-hd"><div class="kcol-dot" style="background:#60a5fa;"></div><div class="kcol-title">To Do</div><span class="kcol-cnt" id="kn-todo">0</span></div>
+          <div class="kcol-body" id="k-todo"></div>
+          <div class="kcol-add"><button class="kcol-add-btn" onclick="openGModal('todo')">+ Add task</button></div>
+        </div>
+        <div class="kcol">
+          <div class="kcol-hd"><div class="kcol-dot" style="background:#fbbf24;"></div><div class="kcol-title">In Progress</div><span class="kcol-cnt" id="kn-inprogress">0</span></div>
+          <div class="kcol-body" id="k-inprogress"></div>
+          <div class="kcol-add"><button class="kcol-add-btn" onclick="openGModal('inprogress')">+ Add task</button></div>
+        </div>
+        <div class="kcol">
+          <div class="kcol-hd"><div class="kcol-dot" style="background:#22d3a0;"></div><div class="kcol-title">Done</div><span class="kcol-cnt" id="kn-done">0</span></div>
+          <div class="kcol-body" id="k-done"></div>
+          <div class="kcol-add"><button class="kcol-add-btn" onclick="openGModal('done')">+ Add task</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALENDAR -->
+    <div class="view" id="view-calendar">
+      <div class="cal-wrap">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" id="cal-prev">←</button>
+          <div class="cal-month-label" id="cal-month-lbl"></div>
+          <button class="cal-today-btn" onclick="calDate=new Date();renderCalendar()">Today</button>
+          <button class="cal-nav-btn" id="cal-next">→</button>
+        </div>
+        <div class="cal-gh"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+      <!-- Streak Section -->
+      <div class="streak-section">
+        <div class="streak-head">
+          <div class="streak-title">📅 Activity Streak</div>
+          <div class="streak-badge" id="streak-badge">🔥 <span id="streak-count">0</span> day streak</div>
+          <div class="streak-info" id="streak-info"></div>
+        </div>
+        <div class="streak-grid" id="streak-day-labels"></div>
+        <div class="streak-squares" id="streak-squares"></div>
+        <div class="streak-legend" style="margin-top:10px;">
+          <div class="sl-item"><div class="sl-dot" style="background:rgba(34,211,160,0.2);border:1px solid rgba(34,211,160,0.3);"></div>Completed tasks</div>
+          <div class="sl-item"><div class="sl-dot" style="background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.2);"></div>Missed deadline</div>
+          <div class="sl-item"><div class="sl-dot" style="background:var(--accent-glow);border:1px solid var(--accent);"></div>Today</div>
+          <div class="sl-item"><div class="sl-dot" style="background:var(--surface);border:1px solid var(--border);"></div>Future / No tasks</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REMINDERS -->
+    <div class="view" id="view-reminders">
+      <div style="margin-bottom:16px;font-family:var(--hf);font-size:16px;font-weight:700;">Deadline Reminders</div>
+      <div class="rem-grid" id="rem-grid"></div>
+    </div>
+
+    <!-- POMODORO -->
+    <div class="view" id="view-pomodoro">
+      <div class="pomo-wrap">
+        <div class="pomo-modes">
+          <button class="pomo-mode active" data-mins="25" data-type="Focus">🎯 Focus</button>
+          <button class="pomo-mode" data-mins="5" data-type="Short Break">☕ Short Break</button>
+          <button class="pomo-mode" data-mins="15" data-type="Long Break">😴 Long Break</button>
+        </div>
+        <div class="pomo-flip-wrap">
+          <div class="pomo-flip-group">
+            <div class="pomo-flip-cards">
+              <div class="flip-unit" id="fu-0">
+                <div class="card-face"><span id="fu-0-cf">2</span></div>
+                <div class="divider"></div>
+                <div class="flap-top"><span id="fu-0-ft">2</span></div>
+                <div class="flap-bot"><span id="fu-0-fb">2</span></div>
+              </div>
+              <div class="flip-unit" id="fu-1">
+                <div class="card-face"><span id="fu-1-cf">5</span></div>
+                <div class="divider"></div>
+                <div class="flap-top"><span id="fu-1-ft">5</span></div>
+                <div class="flap-bot"><span id="fu-1-fb">5</span></div>
+              </div>
+            </div>
+            <div class="pomo-flip-label">MINUTES</div>
+          </div>
+          <div class="pomo-flip-sep">
+            <div class="pomo-flip-dot" id="pomo-dot1"></div>
+            <div class="pomo-flip-dot" id="pomo-dot2"></div>
+          </div>
+          <div class="pomo-flip-group">
+            <div class="pomo-flip-cards">
+              <div class="flip-unit" id="fu-2">
+                <div class="card-face"><span id="fu-2-cf">0</span></div>
+                <div class="divider"></div>
+                <div class="flap-top"><span id="fu-2-ft">0</span></div>
+                <div class="flap-bot"><span id="fu-2-fb">0</span></div>
+              </div>
+              <div class="flip-unit" id="fu-3">
+                <div class="card-face"><span id="fu-3-cf">0</span></div>
+                <div class="divider"></div>
+                <div class="flap-top"><span id="fu-3-ft">0</span></div>
+                <div class="flap-bot"><span id="fu-3-fb">0</span></div>
+              </div>
+            </div>
+            <div class="pomo-flip-label">SECONDS</div>
+          </div>
+        </div>
+        <div class="pomo-type-label" id="pomo-type">FOCUS SESSION</div>
+        <div class="pomo-ctrls">
+          <button class="pomo-btn pomo-start-btn" id="pomo-start">▶ Start</button>
+          <button class="pomo-btn pomo-reset-btn" id="pomo-reset">↺ Reset</button>
+        </div>
+        <div class="pomo-stats">
+          <div class="pomo-stat"><div class="pomo-stat-n" id="ps-sess">0</div><div class="pomo-stat-l">Sessions</div></div>
+          <div class="pomo-stat"><div class="pomo-stat-n" id="ps-mins">0</div><div class="pomo-stat-l">Min Focused</div></div>
+          <div class="pomo-stat"><div class="pomo-stat-n" id="ps-streak">0</div><div class="pomo-stat-l">Streak</div></div>
+        </div>
+        <div class="pomo-log"><div class="pomo-log-title">Today's Sessions</div><div id="pomo-log-list"></div></div>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="view" id="view-notes">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="font-family:var(--hf);font-size:16px;font-weight:700;">Quick Notes</div>
+        <button class="btn-new" id="btn-add-note">+ New Note</button>
+      </div>
+      <div class="notes-grid" id="notes-grid"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ══════ MODALS ══════ -->
+
+<!-- Task Add/Edit -->
+<div class="overlay" id="ov-task">
+  <div class="backdrop-blur"></div>
+  <div class="modal">
+    <div class="modal-top">
+      <div class="modal-title" id="task-modal-ttl">New Assignment</div>
+      <button class="modal-x" onclick="closeOverlay('ov-task')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-task-id"/>
+      <div class="fld"><label>Title *</label><input type="text" id="t-title" placeholder="e.g. DSA Assignment 3" maxlength="80" oninput="document.getElementById('t-ttl-c').textContent=this.value.length"/><div class="ccount"><span id="t-ttl-c">0</span>/80</div></div>
+      <div class="fld-row">
+        <div class="fld"><label>Subject</label><input type="text" id="t-subject" placeholder="e.g. Computer Science"/></div>
+        <div class="fld"><label>Due Date *</label><input type="date" id="t-due"/></div>
+      </div>
+      <div class="fld-row">
+        <div class="fld"><label>Priority</label>
+          <select id="t-priority"><option value="high">🔴 High</option><option value="medium" selected>🟡 Medium</option><option value="low">🟢 Low</option></select>
+        </div>
+        <div class="fld"><label>Category</label>
+          <select id="t-category"><option value="assignment">📝 Assignment</option><option value="exam">📖 Exam Prep</option><option value="project">💻 Project</option><option value="lab">🧪 Lab Work</option><option value="reading">📚 Reading</option><option value="other">📌 Other</option></select>
+        </div>
+      </div>
+      <div class="fld"><label>Notes</label><textarea id="t-notes" placeholder="References, links, instructions…"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeOverlay('ov-task')">Cancel</button>
+      <button class="btn-save" id="task-save-btn">Save Assignment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Group Task -->
+<div class="overlay" id="ov-group">
+  <div class="backdrop-blur"></div>
+  <div class="modal">
+    <div class="modal-top">
+      <div class="modal-title">Group Task</div>
+      <button class="modal-x" onclick="closeOverlay('ov-group')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="fld"><label>Task Title *</label><input type="text" id="g-title" placeholder="e.g. Design Homepage Mockup"/></div>
+      <div class="fld"><label>Assigned To</label><input type="text" id="g-member" placeholder="e.g. Priya, Ravi"/></div>
+      <div class="fld-row">
+        <div class="fld"><label>Status</label><select id="g-status"><option value="todo">To Do</option><option value="inprogress">In Progress</option><option value="done">Done</option></select></div>
+        <div class="fld"><label>Due Date</label><input type="date" id="g-due"/></div>
+      </div>
+      <div class="fld"><label>Description</label><textarea id="g-notes" placeholder="Brief description…" style="min-height:56px;"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeOverlay('ov-group')">Cancel</button>
+      <button class="btn-save" id="g-save-btn">Save Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- Calendar Day Modal -->
+<div class="overlay" id="ov-cal-day">
+  <div class="backdrop-blur"></div>
+  <div class="modal modal-wide">
+    <div class="modal-top">
+      <div>
+        <div class="cal-detail-date" id="cdm-date">May 8</div>
+        <div class="cal-detail-day" id="cdm-weekday">Thursday</div>
+      </div>
+      <button class="modal-x" onclick="closeOverlay('ov-cal-day')">×</button>
+    </div>
+    <div class="modal-body" style="gap:10px;">
+      <div id="cdm-tasks-list"></div>
+      <button class="cal-day-add-btn" id="cdm-add-btn">＋ Add assignment for this date</button>
+    </div>
+  </div>
+</div>
+
+<!-- Task Detail -->
+<div class="overlay" id="ov-task-detail">
+  <div class="backdrop-blur"></div>
+  <div class="modal">
+    <div class="modal-top">
+      <div class="modal-title">Task Details</div>
+      <button class="modal-x" onclick="closeOverlay('ov-task-detail')">×</button>
+    </div>
+    <div class="modal-body" id="task-detail-body"></div>
+    <div class="modal-foot" id="task-detail-foot"></div>
+  </div>
+</div>
+
+<!-- Note Modal -->
+<div class="overlay" id="ov-note">
+  <div class="backdrop-blur"></div>
+  <div class="modal">
+    <div class="modal-top">
+      <div class="modal-title">New Note</div>
+      <button class="modal-x" onclick="closeOverlay('ov-note')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="fld"><label>Title</label><input type="text" id="n-title" placeholder="Note title…"/></div>
+      <div class="fld"><label>Content *</label><textarea id="n-content" placeholder="Write your note…" style="min-height:120px;"></textarea></div>
+      <div class="fld"><label>Colour</label>
+        <div class="color-row" id="color-row">
+          <div class="cpick sel" data-c="#7c6af7" style="background:#7c6af7;" onclick="pickNoteColor(this)"></div>
+          <div class="cpick" data-c="#f87171" style="background:#f87171;" onclick="pickNoteColor(this)"></div>
+          <div class="cpick" data-c="#fbbf24" style="background:#fbbf24;" onclick="pickNoteColor(this)"></div>
+          <div class="cpick" data-c="#22d3a0" style="background:#22d3a0;" onclick="pickNoteColor(this)"></div>
+          <div class="cpick" data-c="#60a5fa" style="background:#60a5fa;" onclick="pickNoteColor(this)"></div>
+          <div class="cpick" data-c="#f472b6" style="background:#f472b6;" onclick="pickNoteColor(this)"></div>
+        </div>
+        <input type="hidden" id="n-color" value="#7c6af7"/>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeOverlay('ov-note')">Cancel</button>
+      <button class="btn-save" id="note-save-btn">Save Note</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script src="app.js"></script>
 </body>
 </html>
