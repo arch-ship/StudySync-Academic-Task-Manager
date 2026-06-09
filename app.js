@@ -183,6 +183,70 @@ function toast(msg,type='ok'){
 }
 
 // ══════════════════════════════════════
+//  DONUT LABEL HELPER
+// ══════════════════════════════════════
+function drawDonutLabel(s){
+  const labelsG=document.getElementById('donut-labels');
+  if(!labelsG)return;
+  labelsG.innerHTML='';
+  const CX=80,CY=80,R=55;
+  const pct2=Math.round(s.p*100);
+  const midAngle=(s.offset+s.p/2)*2*Math.PI - Math.PI/2;
+  const rx=CX+R*Math.cos(midAngle);
+  const ry=CY+R*Math.sin(midAngle);
+  const outerR=R+22;
+  const ox=CX+outerR*Math.cos(midAngle);
+  const oy=CY+outerR*Math.sin(midAngle);
+  const isRight=ox>=CX;
+  const hLen=26;
+  const hx=ox+(isRight?hLen:-hLen);
+  const hy=oy;
+  const anchor=isRight?'start':'end';
+  const tx=hx+(isRight?5:-5);
+
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.setAttribute('transform','rotate(90,80,80)');
+
+  // dot on ring
+  const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  dot.setAttribute('cx',rx);dot.setAttribute('cy',ry);dot.setAttribute('r',3);
+  dot.setAttribute('fill',s.color);
+  g.appendChild(dot);
+
+  // slant line
+  const l1=document.createElementNS('http://www.w3.org/2000/svg','line');
+  l1.setAttribute('x1',rx);l1.setAttribute('y1',ry);
+  l1.setAttribute('x2',ox);l1.setAttribute('y2',oy);
+  l1.setAttribute('stroke',s.color);l1.setAttribute('class','dl-line');
+  g.appendChild(l1);
+
+  // horizontal line
+  const l2=document.createElementNS('http://www.w3.org/2000/svg','line');
+  l2.setAttribute('x1',ox);l2.setAttribute('y1',oy);
+  l2.setAttribute('x2',hx);l2.setAttribute('y2',hy);
+  l2.setAttribute('stroke',s.color);l2.setAttribute('class','dl-line');
+  g.appendChild(l2);
+
+  // label
+  const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+  txt.setAttribute('x',tx);txt.setAttribute('y',hy-4);
+  txt.setAttribute('text-anchor',anchor);txt.setAttribute('fill',s.color);
+  txt.setAttribute('class','dl-label');
+  txt.textContent=s.label;
+  g.appendChild(txt);
+
+  // pct + count
+  const pctTxt=document.createElementNS('http://www.w3.org/2000/svg','text');
+  pctTxt.setAttribute('x',tx);pctTxt.setAttribute('y',hy+10);
+  pctTxt.setAttribute('text-anchor',anchor);pctTxt.setAttribute('fill',s.color);
+  pctTxt.setAttribute('class','dl-pct');
+  pctTxt.textContent=`${pct2}%  (${s.count})`;
+  g.appendChild(pctTxt);
+
+  labelsG.appendChild(g);
+}
+
+// ══════════════════════════════════════
 //  RENDER: DASHBOARD
 // ══════════════════════════════════════
 function renderDashboard(){
@@ -196,9 +260,64 @@ function renderDashboard(){
   document.getElementById('nb-ov').textContent=over||'';
   document.getElementById('nb-ov').style.display=over?'':'none';
   document.getElementById('notif-dot').style.display=over?'':'none';
-  const circ=188;
-  document.getElementById('ring-fg').style.strokeDashoffset=circ-(pct/100)*circ;
-  document.getElementById('d-pct').textContent=pct+'%';
+  // Multi-color donut — High/Med/Low only, no Done segment
+  const CIRC=345.4; // 2*pi*55
+  const high=tasks.filter(t=>t.priority==='high').length;
+  const med=tasks.filter(t=>t.priority==='medium').length;
+  const low=tasks.filter(t=>t.priority==='low').length;
+  const totalAll=(high+med+low)||1;
+
+  const highP=high/totalAll;
+  const medP=med/totalAll;
+  const lowP=low/totalAll;
+
+  function setSeg(elId,portion,offsetP){
+    const el=document.getElementById(elId);
+    if(!el)return;
+    const fill=portion*CIRC;
+    el.style.strokeDasharray=`${fill} ${CIRC}`;
+    el.style.strokeDashoffset=`${-offsetP*CIRC}`;
+  }
+
+  setSeg('ring-high', highP, 0);
+  setSeg('ring-med',  medP,  highP);
+  setSeg('ring-low',  lowP,  highP+medP);
+  // hide done ring
+  const doneEl=document.getElementById('ring-done');
+  if(doneEl){doneEl.style.strokeDasharray='0 345.4';}
+
+  const pctEl=document.getElementById('d-pct');
+  if(pctEl)pctEl.textContent=pct+'%';
+
+  // store seg data for hover
+  window._donutSegs=[
+    {key:'high', label:'High',   count:high, color:'#f87171', p:highP, offset:0},
+    {key:'med',  label:'Medium', count:med,  color:'#fbbf24', p:medP,  offset:highP},
+    {key:'low',  label:'Low',    count:low,  color:'#22d3a0', p:lowP,  offset:highP+medP},
+  ];
+
+  // clear old labels
+  const labelsG=document.getElementById('donut-labels');
+  if(labelsG)labelsG.innerHTML='';
+
+  // attach hover listeners
+  document.querySelectorAll('.ring-seg').forEach(seg=>{
+    seg.onmouseenter=function(){
+      const key=this.getAttribute('data-key');
+      const s=window._donutSegs&&window._donutSegs.find(x=>x.key===key);
+      if(!s||s.count===0)return;
+      document.querySelectorAll('.ring-seg').forEach(r=>{
+        r.classList.toggle('dimmed', r.getAttribute('data-key')!==key);
+        r.classList.toggle('active', r.getAttribute('data-key')===key);
+      });
+      drawDonutLabel(s);
+    };
+    seg.onmouseleave=function(){
+      document.querySelectorAll('.ring-seg').forEach(r=>r.classList.remove('dimmed','active'));
+      const lg=document.getElementById('donut-labels');
+      if(lg)lg.innerHTML='';
+    };
+  });
 
   const sc=[[tasks.filter(t=>!t.done&&t.priority==='high').length,'🔴 High','#f87171'],
             [tasks.filter(t=>!t.done&&t.priority==='medium').length,'🟡 Medium','#fbbf24'],
@@ -787,6 +906,51 @@ document.querySelectorAll('.nav-item').forEach(b=>b.addEventListener('click',()=
   });
 })();
 document.getElementById('btn-add-task').onclick=()=>openAddTask();
+let currentStatFilter='all';
+
+function showStatModal(type){
+  currentStatFilter=type;
+  const map={
+    all:    {title:'📚 All Tasks',     icon:'📚', empty:'No tasks yet!'},
+    pending:{title:'⏳ Pending Tasks',  icon:'⏳', empty:'No pending tasks! 🎉'},
+    done:   {title:'✅ Completed Tasks',icon:'✅', empty:'No completed tasks yet.'},
+    overdue:{title:'⚠️ Overdue Tasks',  icon:'⚠️', empty:'No overdue tasks! 🎉'},
+  };
+  const cfg=map[type]||map.all;
+  document.getElementById('stat-modal-title').textContent=cfg.title;
+
+  // Filter tasks
+  let list=tasks;
+  if(type==='pending') list=tasks.filter(t=>!t.done);
+  else if(type==='done') list=tasks.filter(t=>t.done);
+  else if(type==='overdue') list=tasks.filter(t=>!t.done&&isOD(t.due));
+
+  const body=document.getElementById('stat-modal-body');
+  if(!list.length){
+    body.innerHTML=`<div class="stat-empty"><div class="stat-empty-icon">${cfg.icon}</div>${cfg.empty}</div>`;
+  } else {
+    body.innerHTML=list.map(t=>taskCardHTML(t,false)).join('');
+  }
+  openOverlay('ov-stat-modal');
+}
+
+function closeStatModal(e){
+  if(e.target.id==='ov-stat-modal') closeOverlay('ov-stat-modal');
+}
+
+function filterTasks(type){
+  // map stat card types to fchip data-f values
+  const map={all:'all',pending:'pending',done:'completed',overdue:'overdue'};
+  const f=map[type]||'all';
+  document.querySelectorAll('.fchip').forEach(x=>x.classList.remove('active'));
+  const target=document.querySelector(`.fchip[data-f="${f}"]`);
+  if(target)target.classList.add('active');
+  curFilter=f;
+  renderAssignments();
+  // scroll to top of task list
+  setTimeout(()=>document.getElementById('all-tasks')?.scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
 document.querySelectorAll('.fchip').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('.fchip').forEach(x=>x.classList.remove('active'));b.classList.add('active');curFilter=b.dataset.f;renderAssignments();
 }));

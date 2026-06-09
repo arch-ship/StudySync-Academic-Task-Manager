@@ -163,10 +163,10 @@
     <!-- DASHBOARD -->
     <div class="view active" id="view-dashboard">
       <div class="stats-grid">
-        <div class="stat-card sc-o"><div class="stat-icon">📚</div><div class="stat-num" id="d-total">0</div><div class="stat-lbl">Total Tasks</div></div>
-        <div class="stat-card sc-b"><div class="stat-icon">⏳</div><div class="stat-num" id="d-pending">0</div><div class="stat-lbl">Pending</div></div>
-        <div class="stat-card sc-g"><div class="stat-icon">✅</div><div class="stat-num" id="d-done">0</div><div class="stat-lbl">Completed</div></div>
-        <div class="stat-card sc-r"><div class="stat-icon">⚠️</div><div class="stat-num" id="d-over">0</div><div class="stat-lbl">Overdue</div></div>
+        <div class="stat-card sc-o" onclick="showStatModal('all')" style="cursor:pointer;"><div class="stat-icon">📚</div><div class="stat-num" id="d-total">0</div><div class="stat-lbl">Total Tasks</div></div>
+        <div class="stat-card sc-b" onclick="showStatModal('pending')" style="cursor:pointer;"><div class="stat-icon">⏳</div><div class="stat-num" id="d-pending">0</div><div class="stat-lbl">Pending</div></div>
+        <div class="stat-card sc-g" onclick="showStatModal('done')" style="cursor:pointer;"><div class="stat-icon">✅</div><div class="stat-num" id="d-done">0</div><div class="stat-lbl">Completed</div></div>
+        <div class="stat-card sc-r" onclick="showStatModal('overdue')" style="cursor:pointer;"><div class="stat-icon">⚠️</div><div class="stat-num" id="d-over">0</div><div class="stat-lbl">Overdue</div></div>
       </div>
       <div class="dash-grid">
         <div style="display:flex;flex-direction:column;gap:14px;">
@@ -183,11 +183,19 @@
           <div class="panel">
             <div class="panel-head"><div class="panel-title">🎯 Progress</div></div>
             <div class="prog-wrap">
-              <svg class="prog-ring" width="76" height="76" viewBox="0 0 76 76">
-                <circle class="ring-bg" cx="38" cy="38" r="30" stroke-width="5"/>
-                <circle class="ring-fg" id="ring-fg" cx="38" cy="38" r="30" stroke-width="5" stroke-dasharray="188" stroke-dashoffset="188"/>
-              </svg>
-              <div class="prog-text"><div class="prog-big" id="d-pct">0%</div><div class="prog-sub">tasks completed</div></div>
+              <div class="donut-wrap" id="donut-wrap">
+                <svg id="donut-svg" width="160" height="160" viewBox="0 0 160 160">
+                  <!-- bg ring -->
+                  <circle cx="80" cy="80" r="55" fill="none" stroke="var(--surface3)" stroke-width="18"/>
+                  <!-- segments — hoverable -->
+                  <circle class="ring-seg" id="ring-done" data-key="done" cx="80" cy="80" r="55" fill="none" stroke="#7c6af7" stroke-width="18" stroke-dasharray="345.4" stroke-dashoffset="345.4" stroke-linecap="butt"/>
+                  <circle class="ring-seg" id="ring-low"  data-key="low"  cx="80" cy="80" r="55" fill="none" stroke="#22d3a0" stroke-width="18" stroke-dasharray="345.4" stroke-dashoffset="345.4" stroke-linecap="butt"/>
+                  <circle class="ring-seg" id="ring-med"  data-key="med"  cx="80" cy="80" r="55" fill="none" stroke="#fbbf24" stroke-width="18" stroke-dasharray="345.4" stroke-dashoffset="345.4" stroke-linecap="butt"/>
+                  <circle class="ring-seg" id="ring-high" data-key="high" cx="80" cy="80" r="55" fill="none" stroke="#f87171" stroke-width="18" stroke-dasharray="345.4" stroke-dashoffset="345.4" stroke-linecap="butt"/>
+                  <!-- label lines & text drawn by JS per segment hover -->
+                  <g id="donut-labels"></g>
+                </svg>
+              </div>
             </div>
             <div id="d-prio-bars"></div>
           </div>
@@ -471,6 +479,21 @@
 </div>
 
 <div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- STAT MODAL -->
+<div class="overlay" id="ov-stat-modal" onclick="closeStatModal(event)">
+  <div class="stat-modal" onclick="event.stopPropagation()">
+    <div class="stat-modal-head">
+      <div class="stat-modal-title" id="stat-modal-title">Tasks</div>
+      <button class="modal-close-btn" onclick="closeOverlay('ov-stat-modal')">✕</button>
+    </div>
+    <div class="stat-modal-body" id="stat-modal-body"></div>
+    <div class="stat-modal-foot">
+      <button class="btn-ghost" onclick="closeOverlay('ov-stat-modal')">Close</button>
+      <button class="btn-save" onclick="closeOverlay('ov-stat-modal');switchView('assignments');filterTasks(currentStatFilter)">View All →</button>
+    </div>
+  </div>
+</div>
 
 <script src="app.js"></script>
 </body>
